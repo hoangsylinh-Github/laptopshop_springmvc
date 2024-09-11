@@ -16,13 +16,13 @@
         </head>
 
         <body>
-            <h1>hello from jsp</h1>
             <h2>
                 <!-- /*jstl*/ -->
                 <!-- <c:out value="${hoanglinh}" /> -->
 
                 <!-- jsp -->
-                ${hoanglinh}
+                ${hoanglinh1}
+                create successfully!
             </h2>
 
             <h3>
