@@ -1,7 +1,8 @@
-package vn.hoidanit.laptopshop.controller;
+package vn.hoidanit.laptopshop.controller.admin;
 
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -9,21 +10,26 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import vn.hoidanit.laptopshop.domain.User;
-import vn.hoidanit.laptopshop.repository.UserRepository;
+import vn.hoidanit.laptopshop.service.UploadService;
 import vn.hoidanit.laptopshop.service.UserService;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
 import org.springframework.web.bind.annotation.GetMapping;
 
 // mo hinh MVC
 @Controller
 public class UserController {
     private final UserService userService;
+    private final UploadService uploadService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UploadService uploadService,
+            PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.uploadService = uploadService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @RequestMapping("/")
@@ -38,9 +44,8 @@ public class UserController {
     @RequestMapping("/admin/user")
     public String getAllUserPage(Model model) {
         List<User> users = this.userService.getAllUser();
-        // System.out.println("user: " + users);
         model.addAttribute("users1", users);
-        return "admin/user/getAllUser";
+        return "admin/user/show";
     }
 
     @RequestMapping("/admin/user/{id}")
@@ -48,17 +53,29 @@ public class UserController {
         User user = this.userService.getUserById(id);
         model.addAttribute("user", user);
         model.addAttribute("id", id);
-        return "admin/user/userDetail";
+        return "admin/user/detail";
     }
 
-    @RequestMapping("/admin/user/create")
+    @GetMapping("/admin/user/create")
     public String getUserPage(Model model) {
         model.addAttribute("newUser", new User());
         return "admin/user/create";
     }
 
-    @RequestMapping(value = "/admin/user/create", method = RequestMethod.POST)
-    public String CreateUserPage(Model model, @ModelAttribute("newUser") User hoanglinh) {
+    @PostMapping("/admin/user/create")
+    public String CreateUserPage(Model model,
+            @ModelAttribute("newUser") User hoanglinh,
+            @RequestParam("dataFile") MultipartFile file) {
+
+        String avatar = this.uploadService.hanleSaveUploadFile(file, "avatar");
+
+        String hashPassword = this.passwordEncoder.encode(hoanglinh.getPassword());
+
+        hoanglinh.setAvatar(avatar);
+        hoanglinh.setPassword(hashPassword);
+        hoanglinh.setRole(this.userService.getRoleByName(hoanglinh.getRole().getName()));
+
+        // save user
         this.userService.handleSaveUser(hoanglinh);
         return "redirect:/admin/user";
         // redirect dung de chuyen huong trang sau khi create user successfully!
@@ -68,7 +85,7 @@ public class UserController {
     public String getUpdateUserPage(Model model, @PathVariable long id) {
         User currentUser = this.userService.getUserById(id);
         model.addAttribute("newUser", currentUser);
-        return "admin/user/updateUser";
+        return "admin/user/update";
     }
 
     @PostMapping("/admin/user/update")
@@ -88,7 +105,7 @@ public class UserController {
     public String getDeleteUserPage(Model model, @PathVariable long id) {
         model.addAttribute("id", id);
         model.addAttribute("newUser", new User());
-        return "/admin/user/deleteUser";
+        return "/admin/user/delete";
     }
 
     @PostMapping("/admin/user/delete")
