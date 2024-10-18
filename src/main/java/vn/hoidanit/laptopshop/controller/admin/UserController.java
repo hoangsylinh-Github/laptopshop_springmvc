@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +17,8 @@ import vn.hoidanit.laptopshop.service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -32,14 +36,15 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @RequestMapping("/")
-    public String getHomePage(Model model) {
-        List<User> arrUsers = this.userService.getAllUserByEmail("hoanglinh@gmail.com");
-        System.out.println(arrUsers);
-        model.addAttribute("hoanglinh1", "test");
-        model.addAttribute("linhchuot", "from controller with model");
-        return "hello";
-    }
+    // @RequestMapping("/")
+    // public String getHomePage(Model model) {
+    // List<User> arrUsers =
+    // this.userService.getAllUserByEmail("hoanglinh@gmail.com");
+    // // System.out.println(arrUsers);
+    // model.addAttribute("hoanglinh1", "test");
+    // model.addAttribute("linhchuot", "from controller with model");
+    // return "hello";
+    // }
 
     @RequestMapping("/admin/user")
     public String getAllUserPage(Model model) {
@@ -64,10 +69,21 @@ public class UserController {
 
     @PostMapping("/admin/user/create")
     public String CreateUserPage(Model model,
-            @ModelAttribute("newUser") User hoanglinh,
+            @ModelAttribute("newUser") @Valid User hoanglinh,
+            BindingResult newUserBindingResult,
             @RequestParam("dataFile") MultipartFile file) {
 
-        String avatar = this.uploadService.hanleSaveUploadFile(file, "avatar");
+        // validate
+        List<FieldError> errors = newUserBindingResult.getFieldErrors();
+        for (FieldError error : errors) {
+            System.out.println(">>>>>>" + error.getField() + " - " + error.getDefaultMessage());
+        }
+        // validate
+        if (newUserBindingResult.hasErrors()) {
+            return "/admin/user/create";
+        }
+
+        String avatar = this.uploadService.handleSaveUploadFile(file, "avatar");
 
         String hashPassword = this.passwordEncoder.encode(hoanglinh.getPassword());
 

@@ -10,7 +10,7 @@
                 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
                 <meta name="description" content="Hỏi Dân IT - Dự án laptopshop" />
                 <meta name="author" content="Hỏi Dân IT" />
-                <title>Dashboard - Hỏi Dân IT</title>
+                <title>Admin-Products - Hỏi Dân IT</title>
                 <link href="../css/styles.css" rel="stylesheet" />
                 <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
             </head>
@@ -27,7 +27,51 @@
                                     <li class="breadcrumb-item active"><a href="/admin">Dashboard</a>></li>
                                     <li class="breadcrumb-item active">Products</li>
                                 </ol>
-                                <div>product</div>
+
+                                <div class=" mt-5">
+                                    <div class="row">
+                                        <div class=" col-12 mx-auto">
+                                            <div class="d-flex justify-content-between">
+                                                <h3> Table products</h3>
+                                                <a href="/admin/product/create" class="btn btn-primary">Create
+                                                    Product</a>
+                                            </div>
+                                            <hr />
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">ID</th>
+                                                        <th scope="col">Name</th>
+                                                        <th scope="col">Price</th>
+                                                        <th scope="col">Factory</th>
+                                                        <th scope="col">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <c:forEach var="product" items="${products}">
+                                                        <tr>
+                                                            <td>${product.id}</td>
+                                                            <td>${product.name}</td>
+                                                            <td>${product.price}</td>
+                                                            <td>${product.factory}</td>
+                                                            <td>
+                                                                <a href="/admin/product/${product.id}"
+                                                                    class="btn btn-success">View</a>
+                                                                <a href="/admin/product/update/${product.id}"
+                                                                    class="btn btn-info">Update</a>
+                                                                <a href="/admin/product/delete/${product.id}"
+                                                                    class="btn btn-danger">Delete</a>
+                                                            </td>
+                                                        </tr>
+                                                    </c:forEach>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
                             </div>
                         </main>
                         <jsp:include page="../layout/footer.jsp" />
@@ -35,7 +79,7 @@
                 </div>
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
                     crossorigin="anonymous"></script>
-                <script src="js/scripts.js"></script>
+                <script src="/js/scripts.js"></script>
 
             </body>
 
