@@ -45,7 +45,7 @@
 
                                         <li><a class="dropdown-item" href="#">Quản lý tài khoản</a></li>
 
-                                        <li><a class="dropdown-item" href="/order-history">Lịch sử mua hàng</a></li>
+                                        <li><a class="dropdown-item" href="#">Lịch sử mua hàng</a></li>
                                         <li>
                                             <hr class="dropdown-divider">
                                         </li>
@@ -55,9 +55,11 @@
                                                     value="${_csrf.token}" />
                                                 <button class="dropdown-item">Đăng xuất</button>
                                             </form>
+
                                         </li>
                                     </ul>
                                 </div>
+
                             </c:if>
                             <c:if test="${empty pageContext.request.userPrincipal}">
                                 <a href="/login" class="a-login position-relative me-4 my-auto">

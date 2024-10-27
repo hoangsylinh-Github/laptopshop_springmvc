@@ -34,10 +34,10 @@ public class User {
     @NotNull
     @Size(min = 3, message = "Fullname phải có tối thiểu 3 ký tự!!! ")
     private String fullName;
-    @NotNull
+    // @NotNull
     @Size(min = 3, message = "Address phải có tối thiểu 3 ký tự!!! ")
     private String address;
-    @NotNull
+    // @NotNull
     @Size(min = 3, message = "PhoneNumber phải có tối thiểu 3 ký tự!!! ")
     @Size(max = 11, message = "PhoneNumber phải có tối đa không quá 11 kí tự!!!")
     private String phone;
